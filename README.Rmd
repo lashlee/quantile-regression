@@ -13,4 +13,44 @@ The purpose of this repo is to be an example of quantile regression for my colle
 
 * Brendan-R. "Brendan-r/quantile_regression." *Quantile Regression with R, JAGS and Stan*, GitHub, 15 Oct. 2015, github.com/brendan-r/quantile_regression.
 
+## Design
+
+Here's one thing everybody agrees on: trains are really great! It's just unanimous.
+
+Say your boss is a Regional Manager of a bunch of train stations. You're the Assistant to the Regional Manager. Your trains mostly come on time, but as with anything in life, there is some variability. It really sucks when a train is late, so you want to reduce the train arrival __wait times__. You study your trains and propose an __improvement__ that will make them arrive faster. Your __improvement__ is targeted at reducing the *90th percentile* of the arrival __wait time__.
+
+There are two __types__ of trains in service, *new* trains and *old* trains.
+
+The trains run on three train __platforms__, *main* platform, *south* platform, and *west* platform.
+
+You implemented your improvement on some trains and held it back from others. Now all that's left to prove the value of your improvement is to 
+
+* collect your train arrival __wait time__ data,
+* noting
+    + the train __type__, 
+    + __platform__,  
+    + and whether or not it had the __improvement__ active,
+* run and interpret the quantile regression.
+
+## Data
+
+```{r}
+
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
