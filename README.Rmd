@@ -1,5 +1,5 @@
 ---
-title: "README"
+title: "Quantile Regression Example"
 author: "John Lashlee"
 date: "2/24/2019"
 output: github_document
