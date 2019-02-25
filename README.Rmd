@@ -25,32 +25,72 @@ The trains run on three train __platforms__, *main* platform, *south* platform, 
 
 You implemented your improvement on some trains and held it back from others. Now all that's left to prove the value of your improvement is to 
 
-* collect your train arrival __wait time__ data,
+* collect your train arrival __wait time__ data measured in *minutes*,
 * noting
     + the train __type__, 
     + __platform__,  
     + and whether or not it had the __improvement__ active,
 * run and interpret the quantile regression.
 
+## Software
+
+Use the `quantreg` package for this simple example. It's written by the quantile regression [GOAT](https://www.urbandictionary.com/define.php?term=goat), Roger Koenker.
+
+```{r}
+library(quantreg)
+```
+
 ## Data
 
 ```{r}
-
+set.seed(20190224)
+quantile <- .9
+effects <- list(
+  "type" = c("new" = -.7, "old" = -.06),
+  "platform" = c("main" = .02, "south" = -.08, "west" = .01),
+  "improvement" = c("TRUE" = -.3, "FALSE" = 0)
+)
+N <- 1e5
+ind_vars <- data.frame(
+  "type" = sample(names(effects$type), size = N, replace = TRUE, prob = c(.7, .3)),
+  "platform" = sample(names(effects$platform), size = N, replace = TRUE, prob = c(.6, .3, .1)),
+  "improvement" = sample(c("TRUE", "FALSE"), size = N, replace = TRUE, prob = c(.1, .9)),
+  stringsAsFactors = FALSE
+)
+get_ind_var_effects <- function(var) effects[[var]][ind_vars[[var]]]
+wait_times <- rnorm(n = N, 
+                    mean = 10 + Reduce(`+`, Map(get_ind_var_effects, c("type", "platform", "improvement"))), 
+                    sd = 1 + abs(get_ind_var_effects("type")))
 ```
 
+Inspect the histogram of wait times:
 
+```{r}
+hist(wait_times)
+```
 
+It looks reasonable enough.
 
+### Fit
 
+Now create the quantile regression to find the effect of your improvement on the 90th percentile wait time.
 
+```{r}
+fit <- rq(wait_times ~ ind_vars$type + ind_vars$platform + ind_vars$improvement, 
+          ci = TRUE, 
+          tau = quantile)
+```
 
+Inspect the model output:
 
+```{r}
+summary(fit)
+```
 
+And inspect the output for the coefficients.
 
+```{r}
+coef(fit)
+```
 
-
-
-
-
-
-
+Great, it looks like the improvement did in fact help reduce the 90th percentile wait time. Now you can confidently go back to your boss with your finding that you saved between 16.3 and 10.8 seconds of wait time on average. You're a hero.
